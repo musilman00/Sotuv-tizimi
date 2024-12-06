@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <!-- Vaqt oralig'ini tanlash shakli -->
+  <form method="POST" action="{% url 'calculate_profit' %}">
+    {% csrf_token %}
+    <div class="row mb-4">
+      <div class="col-md-5">
+        <label for="start_date" class="form-label">Boshlanish sanasi:</label>
+        <input type="date" id="start_date" name="start_date" class="form-control" required>
+      </div>
+      <div class="col-md-5">
+        <label for="end_date" class="form-label">Tugash sanasi:</label>
+        <input type="date" id="end_date" name="end_date" class="form-control" required>
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Filtrlash</button>
+      </div>
+    </div>
+  </form>
+  
+  <!-- Xaridlar Bo'limi -->
+  <div class="card mb-4 p-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title text-center fs-4">
+        {% if qarz %}
+          <span class="text-danger">Ziyonda: <span class="fs-5">{{ foyda }}$</span></span>
+        {% else %}
+          <span class="text-success">Foydada: <span class="fs-5">{{ foyda }}$</span></span>
+        {% endif %}
+      </h5>
+      
+      <hr>
+  
+      {% if qarz %}
+        <div class="alert alert-danger text-center" role="alert">
+          Siz zarar ko'ryapsiz! Iltimos, xarajatlarni nazorat qiling.
+        </div>
+      {% elif foyda == 0 %}
+      <div class="alert alert-danger text-center" role="alert">
+        Siz to'xtab qolgansiz! Iltimos, harakat qiling.
+      </div>
+      {% else %}
+        <div class="alert alert-success text-center" role="alert">
+          Siz foyda ko'ryapsiz! Davom eting!
+        </div>
+      {% endif %}
+      
+      <table class="table mt-3">
+        <tbody>
+          <tr>
+            <td><strong>Jami summa:</strong></td>
+            <td class="text-end">{{ jamisumma }}$</td>
+          </tr>
+          <tr>
+            <td><strong>Jami xarajat:</strong></td>
+            <td class="text-end">{{ jamixarajat }}$</td>
+          </tr>
+          <tr>
+            <td><strong>Jami xarid:</strong></td>
+            <td class="text-end">{{ jamixarid }}$</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Sotilgan Maxsulotlar Bo'limi -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+      <h5 class="mb-0">Sotilgan Maxsulotlar</h5>
+      <span class="badge bg-success fs-6"> <b>Umumiy summa:</b> ${{ jamisumma }}</span>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Maxsulot nomi</th>
+              <th>Maxsulot narxi</th>
+              <th>Maxsulot soni</th>
+              <th>Yaratilgan sana</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if income %}
+              {% for income in income %}
+              <tr>
+                <td>{{ income.name }}</td>
+                <td>$ {{ income.price }}</td>
+                <td>{{ income.quantity }} ta</td>
+                <td>{{ income.date|date:"d M Y" }}</td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="4" class="text-center">Hozircha sotilgan mahsulotlar yo'q.</td>
+              </tr>
+            {% endif %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>Maxsulot nomi</th>
+              <th>Maxsulot narxi</th>
+              <th>Maxsulot soni</th>
+              <th>Yaratilgan sana</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Xarajatlar Bo'limi -->
+  <div class="card mb-4">
+    <div class="card-header bg-info text-white d-flex align-items-center justify-content-between">
+      <h5 class="mb-0">Xarajatlar</h5>
+      <span class="badge bg-danger fs-6"> <b>Umumiy xarajat:</b> ${{ jamixarajat }}</span>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Xarajat nomi</th>
+              <th>Xarajat narxi</th>
+              <th>Xarajat xaqida</th>
+              <th>Yaratilgan sana</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if cost %}
+              {% for cost in cost %}
+              <tr>
+                <td>{{ cost.name }}</td>
+                <td>$ {{ cost.price }}</td>
+                <td>{{ cost.description }}</td>
+                <td>{{ cost.date|date:"d M Y" }}</td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="4" class="text-center">Hozircha xarajatlar yo'q.</td>
+              </tr>
+            {% endif %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>Xarajat nomi</th>
+              <th>Xarajat narxi</th>
+              <th>Xarajat xaqida</th>
+              <th>Yaratilgan sana</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

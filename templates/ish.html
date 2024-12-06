@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-4">
+  <!-- Hodimlar section -->
+  <div class="card shadow-lg">
+    <div class="card-header d-flex align-items-center justify-content-between text-white">
+      <h5 class="mb-0">Hodimlar Ro'yxati</h5>
+      <a href="{% url 'dailywork_add' %}" class="btn btn-info">Qo'shish</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover mt-3">
+        <thead class="thead-dark">
+          <tr class="text-center">
+            <th style="width: 60%">Hodim ismi</th>
+            <th style="width: 40%">Hodim maoshi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ish in ish %}
+          <tr class="text-center">
+            <td>{{ ish.name }}</td>
+            <td>{{ ish.price }}$</td>           
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="2" class="text-center text-muted">Hech qanday ma'lumot topilmadi</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr class="text-center bg-light">
+            <th>Hodim ismi</th>
+            <th>Hodim maoshi</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}
